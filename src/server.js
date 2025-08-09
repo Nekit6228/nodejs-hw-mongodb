@@ -15,8 +15,15 @@ const PORT = Number(getEnvVar('PORT', '3000'));
 export const startServer = () => {
   const app = express();
 
-  app.use(express.json());
+ app.use(
+  express.json({
+    type: ['application/json', 'application/vnd.api+json'],
+    limit: '100kb',
+  }),
+);
   app.use(cors());
+
+  app.use('/contacts', contactsRouter);
 
   app.use(
     pino({
@@ -32,14 +39,7 @@ export const startServer = () => {
     });
   });
 
-  app.use(
-  express.json({
-    type: ['application/json', 'application/vnd.api+json'],
-    limit: '100kb',
-  }),
-);
 
-  app.use(contactsRouter);
 
 
   app.use('*', notFondHendler);
