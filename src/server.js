@@ -23,7 +23,6 @@ export const startServer = () => {
 );
   app.use(cors());
 
-  app.use('/contacts', contactsRouter);
 
   app.use(
     pino({
@@ -40,7 +39,7 @@ export const startServer = () => {
   });
 
 
-
+app.use(contactsRouter);
 
   app.use('*', notFondHendler);
 
