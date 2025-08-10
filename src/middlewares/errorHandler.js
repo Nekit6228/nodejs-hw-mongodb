@@ -1,13 +1,17 @@
-import { HttpError } from '../utils/HttpError.js';
+import { HttpError } from 'http-errors';
 
-export default function errorHandler(err, req, res, next) {
-  if (!(err instanceof HttpError)) {
-    err = new HttpError(500, err.message || 'Something went wrong');
+export const errorHandler = (err, req, res, next) => {
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({
+      status: err.status,
+      message: err.message,
+      data: err.data || null,
+    });
   }
 
-  res.status(err.status).json({
-    status: err.status,
-    message: err.message,
-    data: err.data || null,
+  res.status(500).json({
+    status: 500,
+    message: err.message || 'Something went wrong',
+    data: null,
   });
-}
+};
