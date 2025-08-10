@@ -4,7 +4,7 @@ import cors from 'cors';
 import { getEnvVar } from './utils/getEnvVar.js';
 import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import { notFondHendler } from './middlewares/notFoundHandler.js';
+import { notFoundHandler  } from './middlewares/notFoundHandler.js';
 import dotenv from 'dotenv';
 
 
@@ -15,8 +15,14 @@ const PORT = Number(getEnvVar('PORT', '3000'));
 export const startServer = () => {
   const app = express();
 
-  app.use(express.json());
+ app.use(
+  express.json({
+    type: ['application/json', 'application/vnd.api+json'],
+    limit: '100kb',
+  }),
+);
   app.use(cors());
+
 
   app.use(
     pino({
@@ -32,17 +38,10 @@ export const startServer = () => {
     });
   });
 
-  app.use(
-  express.json({
-    type: ['application/json', 'application/vnd.api+json'],
-    limit: '100kb',
-  }),
-);
 
-  app.use(contactsRouter);
+app.use(contactsRouter);
 
-
-  app.use('*', notFondHendler);
+app.use(notFoundHandler);
 
   app.use(errorHandler);
 
