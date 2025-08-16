@@ -21,7 +21,7 @@ const  contacts = await getAllContacts({
     res.json({
         status:200,
         massage:'Successfully found contacts!',
-        contacts,
+        data: contacts,
     });
 } catch (err) {
  next(err);
@@ -91,18 +91,17 @@ export const upsertContactControler = async (req, res,next) => {
 };
 
 
-export const patchContactControler = async (req, res,next) => {
-    const { contactId } = req.params;
-    const result = await updateContact(contactId,req.body);
+export const patchContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await updateContact(contactId, req.body); 
 
-    if (!result) {
-        next(createHttpError(404, 'Contact not found'));
-    return;
-    }
+  if (!contact) {
+    return next(createHttpError(404, 'Contact not found'));
+  }
 
-    res.json({
+  res.json({
     status: 200,
-    message: `Successfully patched a student!`,
-    data: result.student,
+    message: `Successfully patched a Contact: ${contact.name}`,
+    data: contact,
   });
 };
