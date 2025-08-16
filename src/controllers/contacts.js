@@ -1,9 +1,22 @@
 import { getContactById, getAllContacts, createContact, deleteContact, updateContact } from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-export const getAllContactsContaroler = async (req,res,next)=>{
+
+export const getAllContactsControler = async (req,res,next)=>{
+   const { page, perPage } = parsePaginationParams(req.query);
+   const { sortBy, sortOrder } = parseSortParams(req.query);
+   const filter = parseFilterParams(req.query);
 try {
-const  contacts = await getAllContacts();
+const  contacts = await getAllContacts({
+  page,
+  perPage,
+  sortBy,
+  sortOrder,
+  filter,
+});
 
     res.json({
         status:200,
@@ -17,7 +30,7 @@ const  contacts = await getAllContacts();
 
 };
 
-export const getContatctByIdContaroler = async (req,res,next
+export const getContatctByIdControler = async (req,res,next
 ) =>{
     const {contactId} = req.params;
     const contact = await getContactById(contactId);
@@ -34,7 +47,7 @@ export const getContatctByIdContaroler = async (req,res,next
     });
 };
 
-export const createContactController = async (req, res) => {
+export const createContactControler = async (req, res) => {
     const contact = await createContact(req.body);
 
     res.status(201).json({
@@ -44,7 +57,7 @@ export const createContactController = async (req, res) => {
     });
 };
 
-export const deleteContactController = async (req, res,next) => {
+export const deleteContactControler = async (req, res,next) => {
     const { contactId } = req.params;
     const contact = await deleteContact(contactId);
 
@@ -57,7 +70,7 @@ export const deleteContactController = async (req, res,next) => {
 };
 
 
-export const upsertContactController = async (req, res,next) => {
+export const upsertContactControler = async (req, res,next) => {
   const { contactId } = req.params;
   const result = await updateContact(contactId,req.body,{
     upsert:true,
@@ -78,7 +91,7 @@ export const upsertContactController = async (req, res,next) => {
 };
 
 
-export const patchContactController = async (req, res,next) => {
+export const patchContactControler = async (req, res,next) => {
     const { contactId } = req.params;
     const result = await updateContact(contactId,req.body);
 
