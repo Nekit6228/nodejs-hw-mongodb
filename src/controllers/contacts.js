@@ -21,7 +21,7 @@ const  contacts = await getAllContacts({
     res.json({
         status:200,
         massage:'Successfully found contacts!',
-        data: contacts,
+        contacts,
     });
 } catch (err) {
  next(err);
