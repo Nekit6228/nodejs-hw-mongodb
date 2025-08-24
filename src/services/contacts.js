@@ -3,6 +3,7 @@ import { Contact } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 export const getAllContacts = async ({
+    userId,
     page = 1,
     perPage = 10,
     sortOrder = SORT_ORDER.ASC,
@@ -10,7 +11,7 @@ export const getAllContacts = async ({
     filter = {},
 }) => {
     const skip = perPage * (page - 1);
-    const contactsQuery = Contact.find().where("userId").equals(filter.userId);
+    const contactsQuery = Contact.find({ userId: filter.userId });
 
 if (filter.contactType) {
   contactsQuery.where("contactType").equals(filter.contactType);
@@ -35,8 +36,11 @@ if (typeof filter.isFavourite === "boolean") {
 
 
 
-export const getContactById = async (contactId) => {
-  const contact = await Contact.findById(contactId);
+export const getContactById = async (contactId,userId) => {
+  const contact = await Contact.findOne({
+    _id:contactId,
+    userId:userId,
+  });
   return contact;
 };
 
@@ -61,7 +65,7 @@ export const updateContact = async (
     option = {}
 ) => {
     const rawResult = await Contact.findOneAndUpdate(
-        { _id: contactId },
+        { ...contactId },
         payload,
         {
             new: true,
