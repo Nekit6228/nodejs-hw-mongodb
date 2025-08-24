@@ -14,6 +14,7 @@ export const getAllContactsControler = async (req,res,next)=>{
 
 try {
 const  contacts = await getAllContacts({
+  userId: req.user._id,
   page,
   perPage,
   sortBy,

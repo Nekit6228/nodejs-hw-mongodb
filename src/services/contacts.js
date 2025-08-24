@@ -11,7 +11,8 @@ export const getAllContacts = async ({
     filter = {},
 }) => {
     const skip = perPage * (page - 1);
-    const contactsQuery = Contact.find({ userId: filter.userId });
+    const contactsQuery = Contact.find({ userId });
+
 
 if (filter.contactType) {
   contactsQuery.where("contactType").equals(filter.contactType);
