@@ -3,44 +3,37 @@ import { SessionsCollection } from "../db/models/session.js";
 import { UserCollections } from "../db/models/user.js";
 
 
-export const authenticate  = async (req,res,next) =>{
-    const authHeader = req.get('Authorization');
+export const authenticate = async (req, res, next) => {
+  const authHeader = req.get('Authorization');
 
-    if(!authHeader){
-        next(createHttpError(401,'Please provide Authorization header'));
-        return;
-    };
+  if (!authHeader) {
+    return next(createHttpError(401, 'Please provide Authorization header'));
+  }
 
-    const bearer = authHeader.split(' ')[0];
-    const token = authHeader.split(' ')[1];
+  const [bearer, token] = authHeader.split(' ');
 
-    if(bearer !== 'Bearer' || token){
-         next(createHttpError(401, 'Auth header should be of type Bearer'));
-         return;
-    };
+  if (bearer !== 'Bearer' || !token) {
+    return next(createHttpError(401, 'Auth header should be of type Bearer'));
+  }
 
-    const session = await SessionsCollection.findOne({accessToken:token});
+  const session = await SessionsCollection.findOne({ accessToken: token });
 
-    if(!session){
-        next(createHttpError(401, 'Session not found'));
-    return;
-    };
+  if (!session) {
+    return next(createHttpError(401, 'Session not found'));
+  }
 
-    const isAccesTokenExpired = new Date() > new Date(session.accessTokenValidUntil);
+  const isAccessTokenExpired = new Date() > new Date(session.accessTokenValidUntil);
 
-    if(isAccesTokenExpired){
-        next(createHttpError(401, 'Access token expired'));
-    };
+  if (isAccessTokenExpired) {
+    return next(createHttpError(401, 'Access token expired'));
+  }
 
-    const user = await UserCollections.findById(session.userId);
+  const user = await UserCollections.findById(session.userId);
 
-    if(!user){
-         next(createHttpError(401));
-    return;
-    };
+  if (!user) {
+    return next(createHttpError(401, 'User not found'));
+  }
 
-
-     req.user = user;
-
-     next();
+  req.user = user;
+  next();
 };
