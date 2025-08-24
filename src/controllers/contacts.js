@@ -9,7 +9,7 @@ export const getAllContactsControler = async (req,res,next)=>{
    const { page, perPage } = parsePaginationParams(req.query);
    const { sortBy, sortOrder } = parseSortParams(req.query);
    const filter = parseFilterParams(req.query);
-     filter.userId = req.user._id;
+   filter.userId = req.user._id;
 
 
 try {
