@@ -10,15 +10,15 @@ export const getAllContacts = async ({
     filter = {},
 }) => {
     const skip = perPage * (page - 1);
-    const contactsQuery = Contact.find();
+    const contactsQuery = Contact.find().where("userId").equals(filter.userId);
 
-    if (filter.contactType) {
-        contactsQuery.where('contactType').equals(filter.contactType);
-    };
+if (filter.contactType) {
+  contactsQuery.where("contactType").equals(filter.contactType);
+}
 
-    if (typeof filter.isFavourite === 'boolean') {
-        contactsQuery.where('isFavourite').equals(filter.isFavourite);
-    };
+if (typeof filter.isFavourite === "boolean") {
+  contactsQuery.where("isFavourite").equals(filter.isFavourite);
+}
 
     const [contactsCount, contacts] = await Promise.all([
         Contact.find().merge(contactsQuery).countDocuments(),
