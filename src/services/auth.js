@@ -24,30 +24,33 @@ export const registerUser = async (payload) =>{
 
 
 export const loginUser = async (payload) => {
-const user = await UserCollections.findOne({email:payload.email});
+  const user = await UserCollections.findOne({ email: payload.email });
 
-if(!user){
-    throw createHttpError(401,'User not Found');
-}
+  if (!user) {
+    throw createHttpError(401, 'User not Found');
+  }
 
-const isEqual = await bcrypt.compare(payload.password,user.password);
+  const isEqual = await bcrypt.compare(payload.password, user.password);
 
-if(!isEqual){
-    throw createHttpError(401,'Unauthorized');
-}
+  if (!isEqual) {
+    throw createHttpError(401, 'Unauthorized');
+  }
 
-await SessionsCollection.deleteOne({userId: user._id});
 
-    const accessToken = randomBytes(30).toString('base64');
-    const refreshToken = randomBytes(30).toString('base64');
+  await SessionsCollection.deleteOne({ userId: user._id });
 
-    return await SessionsCollection.create({
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  const session = await SessionsCollection.create({
     userId: user._id,
     accessToken,
     refreshToken,
-accessTokenValidUntil: new Date(Date.now()),
-refreshTokenValidUntil: new Date(Date.now()),
-    });
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
+  });
+
+  return session; 
 };
 
 
