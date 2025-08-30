@@ -7,6 +7,7 @@ const contactSchema = new mongoose.Schema({
   email: String,
   isFavourite: { type: Boolean, default: false },
   contactType: { type: String, enum: ['work', 'home', 'personal'], default: 'personal', required: true },
+  photo: { type: String },
 }, { timestamps: true,  versionKey: false });
 
 export const Contact = mongoose.model('Contact', contactSchema);
