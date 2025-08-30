@@ -57,7 +57,7 @@ export const getContatctByIdControler = async (req,res,next
     });
 };
 
-export const createContactController = async (req, res) => {
+export const createContactControler = async (req, res) => {
   const photo = req.file;
 
   let photoUrl;
