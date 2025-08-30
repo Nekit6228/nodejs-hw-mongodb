@@ -57,17 +57,29 @@ export const getContatctByIdControler = async (req,res,next
     });
 };
 
-export const createContactControler = async (req, res) => {
-    const contact = await createContact({
-        userId: req.user._id,
-        ...req.body,
-    });
+export const createContactController = async (req, res) => {
+  const photo = req.file;
 
-    res.status(201).json({
-        status: 201,
-        massage: 'Successfully created a contact!',
-        data: contact,
-    });
+  let photoUrl;
+
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const contact = await createContact(
+    { ...req.body, photo: photoUrl },
+    req.user._id,
+  );
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: contact,
+  });
 };
 
 export const deleteContactControler = async (req, res,next) => {
