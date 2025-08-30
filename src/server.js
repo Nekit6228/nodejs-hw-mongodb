@@ -7,6 +7,9 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler  } from './middlewares/notFoundHandler.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { UPLOAD_DIR } from './constants/index.js';
+
+
 
 
 dotenv.config();
@@ -15,6 +18,8 @@ const PORT = Number(getEnvVar('PORT', '3000'));
 
 export const startServer = () => {
   const app = express();
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
  app.use(
   express.json({
