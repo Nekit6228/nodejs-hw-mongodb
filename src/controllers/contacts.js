@@ -70,10 +70,11 @@ export const createContactControler = async (req, res) => {
     }
   }
 
-  const contact = await createContact(
-    { ...req.body, photo: photoUrl },
-    req.user._id,
-  );
+   const contact = await createContact({
+        userId: req.user._id,
+        ...req.body,
+        photo: photoUrl,
+    });
 
   res.status(201).json({
     status: 201,
