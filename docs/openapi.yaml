@@ -58,13 +58,6 @@ paths:
     post:
       $ref: ../swagger/paths/auths/reset-pwd.yaml
 
-  /auth/get-oauth-url:
-    get:
-      $ref: ../swagger/paths/auths/get-oauth-url.yaml
-
-  /auth/confirm-oauth:
-    post:
-      $ref: ../swagger/paths/auths/confirm-oauth.yaml
 components:
   securitySchemes:
     bearerAuth:
